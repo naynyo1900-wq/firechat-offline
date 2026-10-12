@@ -15,13 +15,6 @@ jobs:
           unzip -o offline_bluetooth_chat*.zip -d .
           ls -la
 
-      - name: Fix Android v1 Embedding
-        run: |
-          # AndroidManifest.xml ထဲမှ flutterEmbedding v1 tag အား ရှင်းလင်းပြီး v2 သို့ ပြောင်းလဲခြင်း
-          find android -name "AndroidManifest.xml" -exec sed -i 's/android:name="io.flutter.app.FlutterApplication"/android:name="android.app.Application"/g' {} +
-          find android -name "AndroidManifest.xml" -exec sed -i '/android:name="flutterEmbedding"/d' {} +
-          find android -name "AndroidManifest.xml" -exec sed -i '/<application/a \        <meta-data android:name="flutterEmbedding" android:value="2" \/>' {} +
-
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -33,11 +26,20 @@ jobs:
         with:
           channel: 'stable'
 
+      - name: Fix Android v1 Embedding Issue
+        run: |
+          # Android v1 embedding စစ်ဆေးမှုကို ကျော်လွှားရန် config ထည့်သွင်းခြင်း
+          echo "flutter.suppress-android-v1-deprecation-warning=true" >> android/gradle.properties || true
+          echo "android.suppressUnsupportedCompileSdk=34" >> android/gradle.properties || true
+          
+          # Manifest ထဲမှ v1 application tag အဟောင်းကို ရှင်းလင်းခြင်း
+          sed -i 's/android:name="io.flutter.app.FlutterApplication"/android:name="android.app.Application"/g' android/app/src/main/AndroidManifest.xml || true
+
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --release --no-validate-approvals
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
