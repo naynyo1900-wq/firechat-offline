@@ -19,23 +19,23 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.5.3'
+          flutter-version: '3.19.0'
           channel: 'stable'
 
       - name: Get Dependencies
         run: flutter pub get
 
       - name: Build APK
-        run: flutter build apk --release --no-sound-null-safety
+        run: flutter build apk --release
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: FireChat-Myanmar-Release
           path: build/app/outputs/flutter-apk/app-release.apk
-          
+
