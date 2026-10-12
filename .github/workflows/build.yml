@@ -24,7 +24,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '2.10.5'
+          flutter-version: '2.5.3'
           channel: 'stable'
 
       - name: Get Dependencies
@@ -38,4 +38,4 @@ jobs:
         with:
           name: FireChat-Myanmar-Release
           path: build/app/outputs/flutter-apk/app-release.apk
-
+          
